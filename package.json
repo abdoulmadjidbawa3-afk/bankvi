@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-"scripts": {
-  "start": "node server.js",
-  "test": "echo \"Error: no test specified\" && exit 1"
-},
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/abdoulmadjidbawa3-afk/bankvi.git"
@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/abdoulmadjidbawa3-afk/bankvi/issues"
   },
-  "homepage": "https://github.com/abdoulmadjidbawa3-afk/bankvi#readme"
+  "homepage": "https://github.com/abdoulmadjidbawa3-afk/bankvi#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "sqlite3": "^6.0.1"
+  }
 }
