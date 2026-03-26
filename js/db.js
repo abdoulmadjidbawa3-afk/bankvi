@@ -48,13 +48,13 @@ async function getDb() {
     );
 
     CREATE TABLE IF NOT EXISTS utilisateurs (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nom TEXT NOT NULL,
-  boutique TEXT NOT NULL,
-  tel TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
-  token TEXT
-);
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nom TEXT NOT NULL,
+      boutique TEXT NOT NULL,
+      tel TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      token TEXT
+    );
   `);
 
   sauvegarderDb();
