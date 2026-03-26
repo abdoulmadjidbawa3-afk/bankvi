@@ -55,7 +55,7 @@ async function chargerDashboard() {
   if (!hero) return;
 
   try {
-    const res = await fetch('http://localhost:3000/api/dashboard');
+const res = await fetch(window.location.origin + '/api/dashboard');
     const data = await res.json();
 
     // Hero
