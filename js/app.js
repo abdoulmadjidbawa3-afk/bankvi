@@ -80,8 +80,17 @@ async function chargerDashboard() {
     afficherDettesRecentes(dettes.filter(d => d.statut === 'en_cours').slice(0, 3));
 
     // Onboarding si tout est vide
-    if (data.ventes_jour === 0 && data.dettes_total === 0 && data.stocks_critique === 0) {
+    const aucuneDonnee = 
+      data.ventes_jour === 0 && 
+      data.dettes_total === 0 && 
+      data.stocks_critique === 0 &&
+      data.ventes_count === 0;
+
+    if (aucuneDonnee) {
       afficherOnboarding();
+    } else {
+      const ob = document.getElementById('onboarding');
+      if (ob) ob.remove();
     }
 
   } catch(e) {
@@ -130,41 +139,84 @@ function afficherOnboarding() {
   onboarding.id = 'onboarding';
   onboarding.innerHTML = `
     <div style="
-      background: #0C447C;
+      background: #E6F1FB;
+      border: 1.5px dashed #378ADD;
       border-radius: 16px;
-      padding: 1.5rem;
+      padding: 1.25rem;
       margin-bottom: 1.25rem;
-      text-align: center;
     ">
-      <p style="font-size:28px;margin-bottom:8px;">👋</p>
-      <h2 style="color:#fff;font-size:18px;font-weight:600;margin-bottom:6px;">
-        Bienvenue sur BANKVI, ${user.nom ? user.nom.split(' ')[0] : ''} !
-      </h2>
-      <p style="color:#85B7EB;font-size:13px;margin-bottom:1.25rem;">
-        Ton espace est prêt. Commence par enregistrer ta première vente ou ta première dette.
+      <p style="font-size:14px;font-weight:600;color:#0C447C;margin-bottom:4px;">
+        👋 Bienvenue ${user.nom ? user.nom.split(' ')[0] : ''} — Commence ici
       </p>
-      <div style="display:flex;gap:10px;">
+      <p style="font-size:12px;color:#185FA5;margin-bottom:1rem;">
+        Enregistre ta première opération et ce message disparaîtra.
+      </p>
+      <div style="display:flex;gap:8px;">
         <a href="ventes.html" style="
-          flex:1;padding:10px;background:rgba(255,255,255,0.15);
-          color:#fff;border-radius:10px;font-size:13px;
+          flex:1;padding:10px;background:#185FA5;
+          color:#fff;border-radius:10px;font-size:12px;
           font-weight:500;text-decoration:none;text-align:center;
         ">+ Vente</a>
         <a href="dettes.html" style="
-          flex:1;padding:10px;background:rgba(255,255,255,0.15);
-          color:#fff;border-radius:10px;font-size:13px;
+          flex:1;padding:10px;background:#185FA5;
+          color:#fff;border-radius:10px;font-size:12px;
           font-weight:500;text-decoration:none;text-align:center;
         ">+ Dette</a>
         <a href="stocks.html" style="
-          flex:1;padding:10px;background:rgba(255,255,255,0.15);
-          color:#fff;border-radius:10px;font-size:13px;
+          flex:1;padding:10px;background:#185FA5;
+          color:#fff;border-radius:10px;font-size:12px;
           font-weight:500;text-decoration:none;text-align:center;
         ">+ Stock</a>
       </div>
     </div>
+
+    <p style="
+      font-size:11px;font-weight:500;color:#a0a0a0;
+      letter-spacing:0.5px;text-transform:uppercase;
+      margin-bottom:8px;
+    ">Aperçu — exemple de dettes</p>
+
+    <div style="
+      border: 1.5px dashed #e8e8e8;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      opacity: 0.5;
+    ">
+      <div class="list-card" style="pointer-events:none;">
+        <div class="lc-left">
+          <div class="lc-avatar red">AK</div>
+          <div>
+            <p class="lc-name">Exemple client</p>
+            <p class="lc-sub">Produit acheté à crédit</p>
+          </div>
+        </div>
+        <div class="lc-right">
+          <p class="lc-amount red">-- F</p>
+          <p class="lc-days">à compléter</p>
+        </div>
+      </div>
+      <div class="list-card" style="pointer-events:none;">
+        <div class="lc-left">
+          <div class="lc-avatar blue">EX</div>
+          <div>
+            <p class="lc-name">Autre client</p>
+            <p class="lc-sub">Autre produit</p>
+          </div>
+        </div>
+        <div class="lc-right">
+          <p class="lc-amount red">-- F</p>
+          <p class="lc-days">à compléter</p>
+        </div>
+      </div>
+    </div>
   `;
 
-  const hero = main.querySelector('.hero-card');
-  if (hero) hero.insertAdjacentElement('afterend', onboarding);
+  const alertBar = main.querySelector('.alert-bar');
+  if (alertBar) {
+    alertBar.insertAdjacentElement('afterend', onboarding);
+  } else {
+    main.appendChild(onboarding);
+  }
 }
-
 chargerDashboard();
