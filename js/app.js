@@ -1,8 +1,16 @@
 const API = window.location.origin + '/api';
 
 // ===== PROTECTION =====
-const token = localStorage.getItem('bankvi_token');
-if (!token) window.location.href = 'login.html';
+function verifierConnexion() {
+  const token = localStorage.getItem('bankvi_token');
+  const pageCourante = window.location.pathname.split('/').pop();
+  if (!token && pageCourante !== 'login.html') {
+    window.location.href = 'login.html';
+    return false;
+  }
+  return true;
+}
+if (!verifierConnexion()) throw new Error('Non connecté');
 
 // ===== DATE =====
 function afficherDate() {
@@ -23,6 +31,8 @@ if (avatar && user.nom) {
 // ===== SIDEBAR =====
 function creerSidebar() {
   if (window.innerWidth < 768) return;
+  const existing = document.querySelector('.sidebar');
+  if (existing) existing.remove();
   const sidebar = document.createElement('aside');
   sidebar.className = 'sidebar';
   const items = [
@@ -67,34 +77,32 @@ async function chargerDashboard() {
     const data = await res.json();
 
     document.querySelector('.hero-amount').textContent = formaterMontant(data.ventes_jour);
-    document.querySelector('.hero-sub').textContent    = data.ventes_count + ' ventes enregistrées';
+    document.querySelector('.hero-sub').textContent = data.ventes_count + ' ventes enregistrées';
 
     const metriques = document.querySelectorAll('.metric-value');
     if (metriques[0]) metriques[0].textContent = formaterMontant(data.dettes_total);
     if (metriques[1]) metriques[1].textContent = data.stocks_critique;
-    if (metriques[2]) metriques[2].textContent = formaterMontant(data.remboursé || 0);
+    if (metriques[2]) metriques[2].textContent = formaterMontant(0);
     if (metriques[3]) metriques[3].textContent = '1';
 
-    const resD   = await fetch(`${API}/dettes`);
+    const resD = await fetch(`${API}/dettes`);
     const dettes = await resD.json();
-    afficherDettesRecentes(dettes.filter(d => d.statut === 'en_cours').slice(0, 3));
+    const enCours = dettes.filter(d => d.statut === 'en_cours');
 
-    // Onboarding si tout est vide
-    const aucuneDonnee = 
-      data.ventes_jour === 0 && 
-      data.dettes_total === 0 && 
-      data.stocks_critique === 0 &&
-      data.ventes_count === 0;
+    const aucuneDonnee =
+      data.ventes_count === 0 &&
+      data.dettes_total === 0;
 
     if (aucuneDonnee) {
       afficherOnboarding();
     } else {
       const ob = document.getElementById('onboarding');
       if (ob) ob.remove();
+      afficherDettesRecentes(enCours.slice(0, 3));
     }
 
   } catch(e) {
-    console.log('Erreur dashboard');
+    console.log('Erreur dashboard:', e);
   }
 }
 
@@ -135,88 +143,90 @@ function afficherOnboarding() {
   const main = document.querySelector('.main-content');
   if (!main || document.getElementById('onboarding')) return;
 
+  const liste = document.querySelector('.cards-list');
+  if (liste) {
+    liste.innerHTML = `
+      <div style="padding:1.5rem;text-align:center;">
+        <p style="color:#a0a0a0;font-size:14px;">Tes dettes apparaîtront ici</p>
+        <a href="dettes.html" style="color:#185FA5;font-size:13px;margin-top:6px;display:block;">
+          Ajouter une dette →
+        </a>
+      </div>`;
+  }
+
   const onboarding = document.createElement('div');
   onboarding.id = 'onboarding';
   onboarding.innerHTML = `
     <div style="
-      background: #E6F1FB;
-      border: 1.5px dashed #378ADD;
-      border-radius: 16px;
-      padding: 1.25rem;
-      margin-bottom: 1.25rem;
+      background:#E6F1FB;
+      border:1.5px dashed #378ADD;
+      border-radius:16px;
+      padding:1.25rem;
+      margin-bottom:1.25rem;
     ">
-      <p style="font-size:14px;font-weight:600;color:#0C447C;margin-bottom:4px;">
-        👋 Bienvenue ${user.nom ? user.nom.split(' ')[0] : ''} — Commence ici
+      <p style="font-size:15px;font-weight:600;color:#0C447C;margin-bottom:6px;">
+        👋 Bienvenue ${user.nom ? user.nom.split(' ')[0] : ''} !
       </p>
-      <p style="font-size:12px;color:#185FA5;margin-bottom:1rem;">
-        Enregistre ta première opération et ce message disparaîtra.
+      <p style="font-size:12px;color:#185FA5;margin-bottom:1rem;line-height:1.6;">
+        BANKVI est prêt. Enregistre ta première opération — 
+        ce message disparaîtra automatiquement.
       </p>
       <div style="display:flex;gap:8px;">
-        <a href="ventes.html" style="
-          flex:1;padding:10px;background:#185FA5;
-          color:#fff;border-radius:10px;font-size:12px;
-          font-weight:500;text-decoration:none;text-align:center;
-        ">+ Vente</a>
-        <a href="dettes.html" style="
-          flex:1;padding:10px;background:#185FA5;
-          color:#fff;border-radius:10px;font-size:12px;
-          font-weight:500;text-decoration:none;text-align:center;
-        ">+ Dette</a>
-        <a href="stocks.html" style="
-          flex:1;padding:10px;background:#185FA5;
-          color:#fff;border-radius:10px;font-size:12px;
-          font-weight:500;text-decoration:none;text-align:center;
-        ">+ Stock</a>
+        <a href="ventes.html" style="flex:1;padding:10px;background:#185FA5;color:#fff;border-radius:10px;font-size:12px;font-weight:500;text-decoration:none;text-align:center;">
+          + Vente
+        </a>
+        <a href="dettes.html" style="flex:1;padding:10px;background:#185FA5;color:#fff;border-radius:10px;font-size:12px;font-weight:500;text-decoration:none;text-align:center;">
+          + Dette
+        </a>
+        <a href="stocks.html" style="flex:1;padding:10px;background:#185FA5;color:#fff;border-radius:10px;font-size:12px;font-weight:500;text-decoration:none;text-align:center;">
+          + Stock
+        </a>
       </div>
     </div>
 
-    <p style="
-      font-size:11px;font-weight:500;color:#a0a0a0;
-      letter-spacing:0.5px;text-transform:uppercase;
-      margin-bottom:8px;
-    ">Aperçu — exemple de dettes</p>
-
-    <div style="
-      border: 1.5px dashed #e8e8e8;
-      border-radius: 16px;
-      overflow: hidden;
-      margin-bottom: 1.25rem;
-      opacity: 0.5;
-    ">
-      <div class="list-card" style="pointer-events:none;">
-        <div class="lc-left">
-          <div class="lc-avatar red">AK</div>
+    <p style="font-size:11px;font-weight:500;color:#a0a0a0;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;">
+      Aperçu — exemple
+    </p>
+    <div style="border:1.5px dashed #e8e8e8;border-radius:16px;overflow:hidden;opacity:0.45;pointer-events:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 1.25rem;border-bottom:0.5px solid #e8e8e8;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:#FAECE7;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#993C1D;">AK</div>
           <div>
-            <p class="lc-name">Exemple client</p>
-            <p class="lc-sub">Produit acheté à crédit</p>
+            <p style="font-size:14px;font-weight:500;color:#1a1a1a;">Exemple client</p>
+            <p style="font-size:12px;color:#6b6b6b;">Produit à crédit</p>
           </div>
         </div>
-        <div class="lc-right">
-          <p class="lc-amount red">-- F</p>
-          <p class="lc-days">à compléter</p>
+        <div style="text-align:right;">
+          <p style="font-size:14px;font-weight:600;color:#D85A30;">-- F</p>
+          <p style="font-size:11px;color:#a0a0a0;">à saisir</p>
         </div>
       </div>
-      <div class="list-card" style="pointer-events:none;">
-        <div class="lc-left">
-          <div class="lc-avatar blue">EX</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 1.25rem;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:#E6F1FB;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#185FA5;">EX</div>
           <div>
-            <p class="lc-name">Autre client</p>
-            <p class="lc-sub">Autre produit</p>
+            <p style="font-size:14px;font-weight:500;color:#1a1a1a;">Autre client</p>
+            <p style="font-size:12px;color:#6b6b6b;">Autre produit</p>
           </div>
         </div>
-        <div class="lc-right">
-          <p class="lc-amount red">-- F</p>
-          <p class="lc-days">à compléter</p>
+        <div style="text-align:right;">
+          <p style="font-size:14px;font-weight:600;color:#D85A30;">-- F</p>
+          <p style="font-size:11px;color:#a0a0a0;">à saisir</p>
         </div>
       </div>
     </div>
   `;
 
-  const alertBar = main.querySelector('.alert-bar');
-  if (alertBar) {
-    alertBar.insertAdjacentElement('afterend', onboarding);
+  const metriques = main.querySelector('.metrics-grid');
+  if (metriques) {
+    metriques.insertAdjacentElement('afterend', onboarding);
   } else {
-    main.appendChild(onboarding);
+    main.prepend(onboarding);
   }
+  const alertStock = document.getElementById('alert-stock');
+if (alertStock) {
+  alertStock.style.display = data.stocks_critique > 0 ? 'block' : 'none';
 }
+}
+
 chargerDashboard();
