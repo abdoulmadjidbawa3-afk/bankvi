@@ -46,6 +46,15 @@ async function getDb() {
       seuil_alerte INTEGER DEFAULT 5,
       prix_unitaire REAL NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS utilisateurs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nom TEXT NOT NULL,
+  boutique TEXT NOT NULL,
+  tel TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  token TEXT
+);
   `);
 
   sauvegarderDb();

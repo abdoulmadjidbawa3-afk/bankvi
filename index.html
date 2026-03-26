@@ -7,12 +7,19 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
   <link rel="manifest" href="/manifest.json">
+<script>
+  if (!localStorage.getItem('bankvi_token')) {
+    window.location.href = 'login.html';
+  }
+</script>
 </head>
 <body>
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <div class="nav-logo">BANK<span>VI</span></div>
+    <div class="nav-logo">
+  <img src="assets/logo.svg" alt="BANKVI" height="32">
+</div>
     <div class="nav-date" id="nav-date"></div>
     <div class="nav-avatar">KM</div>
   </nav>

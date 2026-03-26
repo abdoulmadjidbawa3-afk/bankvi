@@ -13,6 +13,12 @@ function afficherDate() {
 
 afficherDate();
 
+// ===== AFFICHER NOM COMMERÇANT =====
+const user = JSON.parse(localStorage.getItem('bankvi_user') || '{}');
+const avatar = document.querySelector('.nav-avatar');
+if (avatar && user.nom) {
+  avatar.textContent = user.nom.substring(0, 2).toUpperCase();
+}
 // ===== SIDEBAR DESKTOP =====
 function creerSidebar() {
   if (window.innerWidth < 768) return;
