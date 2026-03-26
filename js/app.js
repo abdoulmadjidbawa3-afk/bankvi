@@ -1,31 +1,30 @@
-// ===== DATE AUTOMATIQUE =====
-function afficherDate() {
-  const options = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  };
-  const date = new Date().toLocaleDateString('fr-FR', options);
-  const el = document.getElementById('nav-date');
-  if (el) el.textContent = date;
-}
+const API = window.location.origin + '/api';
 
+// ===== PROTECTION =====
+const token = localStorage.getItem('bankvi_token');
+if (!token) window.location.href = 'login.html';
+
+// ===== DATE =====
+function afficherDate() {
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const el = document.getElementById('nav-date');
+  if (el) el.textContent = new Date().toLocaleDateString('fr-FR', options);
+}
 afficherDate();
 
-// ===== AFFICHER NOM COMMERÇANT =====
+// ===== UTILISATEUR =====
 const user = JSON.parse(localStorage.getItem('bankvi_user') || '{}');
 const avatar = document.querySelector('.nav-avatar');
 if (avatar && user.nom) {
   avatar.textContent = user.nom.substring(0, 2).toUpperCase();
+  avatar.title = user.nom;
 }
-// ===== SIDEBAR DESKTOP =====
+
+// ===== SIDEBAR =====
 function creerSidebar() {
   if (window.innerWidth < 768) return;
-
   const sidebar = document.createElement('aside');
   sidebar.className = 'sidebar';
-
   const items = [
     { icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>', label: 'Accueil', href: 'index.html' },
     { icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M9 6v3l2 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>', label: 'Dettes', href: 'dettes.html' },
@@ -33,9 +32,7 @@ function creerSidebar() {
     { icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 9h6M9 6v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>', label: 'Stocks', href: 'stocks.html' },
     { icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 15c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>', label: 'Profil', href: 'profil.html' },
   ];
-
   const pageCourante = window.location.pathname.split('/').pop() || 'index.html';
-
   items.forEach(item => {
     const a = document.createElement('a');
     a.href = item.href;
@@ -43,11 +40,9 @@ function creerSidebar() {
     a.innerHTML = item.icon + `<span>${item.label}</span>`;
     sidebar.appendChild(a);
   });
-
   const navbar = document.querySelector('.navbar');
   if (navbar) navbar.insertAdjacentElement('afterend', sidebar);
 }
-
 creerSidebar();
 
 // ===== UTILITAIRES =====
@@ -55,39 +50,59 @@ function formaterMontant(montant) {
   return Number(montant).toLocaleString('fr-FR') + ' F';
 }
 
-// ===== CHARGER DASHBOARD =====
+function joursDepuis(dateStr) {
+  const diff = Math.floor((new Date() - new Date(dateStr)) / 86400000);
+  if (diff === 0) return "aujourd'hui";
+  if (diff === 1) return 'hier';
+  return `il y a ${diff} jours`;
+}
+
+// ===== DASHBOARD =====
 async function chargerDashboard() {
   const hero = document.querySelector('.hero-amount');
   if (!hero) return;
 
   try {
-const res = await fetch(window.location.origin + '/api/dashboard');
+    const res  = await fetch(`${API}/dashboard`);
     const data = await res.json();
 
-    // Hero
     document.querySelector('.hero-amount').textContent = formaterMontant(data.ventes_jour);
-    document.querySelector('.hero-sub').textContent = data.ventes_count + ' ventes enregistrées';
+    document.querySelector('.hero-sub').textContent    = data.ventes_count + ' ventes enregistrées';
 
-    // Métriques
     const metriques = document.querySelectorAll('.metric-value');
     if (metriques[0]) metriques[0].textContent = formaterMontant(data.dettes_total);
     if (metriques[1]) metriques[1].textContent = data.stocks_critique;
-    if (metriques[2]) metriques[2].textContent = formaterMontant(0);
+    if (metriques[2]) metriques[2].textContent = formaterMontant(data.remboursé || 0);
     if (metriques[3]) metriques[3].textContent = '1';
 
-    // Dettes récentes
-    const resD = await fetch('http://localhost:3000/api/dettes');
+    const resD   = await fetch(`${API}/dettes`);
     const dettes = await resD.json();
-    afficherDettesRecentes(dettes.slice(0, 3));
+    afficherDettesRecentes(dettes.filter(d => d.statut === 'en_cours').slice(0, 3));
+
+    // Onboarding si tout est vide
+    if (data.ventes_jour === 0 && data.dettes_total === 0 && data.stocks_critique === 0) {
+      afficherOnboarding();
+    }
 
   } catch(e) {
-    console.log('Serveur non disponible — mode aperçu');
+    console.log('Erreur dashboard');
   }
 }
 
 function afficherDettesRecentes(dettes) {
   const liste = document.querySelector('.cards-list');
-  if (!liste || dettes.length === 0) return;
+  if (!liste) return;
+
+  if (dettes.length === 0) {
+    liste.innerHTML = `
+      <div style="padding:1.5rem;text-align:center;">
+        <p style="color:#a0a0a0;font-size:14px;">Aucune dette en cours</p>
+        <a href="dettes.html" style="color:#185FA5;font-size:13px;margin-top:6px;display:block;">
+          Ajouter une dette →
+        </a>
+      </div>`;
+    return;
+  }
 
   liste.innerHTML = dettes.map(d => `
     <div class="list-card">
@@ -100,10 +115,56 @@ function afficherDettesRecentes(dettes) {
       </div>
       <div class="lc-right">
         <p class="lc-amount red">${formaterMontant(d.montant)}</p>
-        <p class="lc-days">${new Date(d.date_creation).toLocaleDateString('fr-FR')}</p>
+        <p class="lc-days">${joursDepuis(d.date_creation)}</p>
       </div>
     </div>
   `).join('');
+}
+
+// ===== ONBOARDING =====
+function afficherOnboarding() {
+  const main = document.querySelector('.main-content');
+  if (!main || document.getElementById('onboarding')) return;
+
+  const onboarding = document.createElement('div');
+  onboarding.id = 'onboarding';
+  onboarding.innerHTML = `
+    <div style="
+      background: #0C447C;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      text-align: center;
+    ">
+      <p style="font-size:28px;margin-bottom:8px;">👋</p>
+      <h2 style="color:#fff;font-size:18px;font-weight:600;margin-bottom:6px;">
+        Bienvenue sur BANKVI, ${user.nom ? user.nom.split(' ')[0] : ''} !
+      </h2>
+      <p style="color:#85B7EB;font-size:13px;margin-bottom:1.25rem;">
+        Ton espace est prêt. Commence par enregistrer ta première vente ou ta première dette.
+      </p>
+      <div style="display:flex;gap:10px;">
+        <a href="ventes.html" style="
+          flex:1;padding:10px;background:rgba(255,255,255,0.15);
+          color:#fff;border-radius:10px;font-size:13px;
+          font-weight:500;text-decoration:none;text-align:center;
+        ">+ Vente</a>
+        <a href="dettes.html" style="
+          flex:1;padding:10px;background:rgba(255,255,255,0.15);
+          color:#fff;border-radius:10px;font-size:13px;
+          font-weight:500;text-decoration:none;text-align:center;
+        ">+ Dette</a>
+        <a href="stocks.html" style="
+          flex:1;padding:10px;background:rgba(255,255,255,0.15);
+          color:#fff;border-radius:10px;font-size:13px;
+          font-weight:500;text-decoration:none;text-align:center;
+        ">+ Stock</a>
+      </div>
+    </div>
+  `;
+
+  const hero = main.querySelector('.hero-card');
+  if (hero) hero.insertAdjacentElement('afterend', onboarding);
 }
 
 chargerDashboard();
