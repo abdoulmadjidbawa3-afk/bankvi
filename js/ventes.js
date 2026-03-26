@@ -90,8 +90,8 @@ async function enregistrerVente() {
     return;
   }
 
-  try {
-    await fetch(`${API}/ventes`, {
+ try {
+    const response = await fetch(`${API}/ventes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -102,12 +102,26 @@ async function enregistrerVente() {
         client: client || ''
       })
     });
+
+    // Si vente à crédit → créer automatiquement une dette
+    if (mode === 'À crédit' && client) {
+      await fetch(`${API}/dettes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client: client,
+          produit: produit,
+          montant: Number(montant),
+          date_remboursement: ''
+        })
+      });
+    }
+
     fermerModalVente();
     chargerVentes();
   } catch(e) {
     alert('Erreur — serveur non disponible');
   }
-}
 
 document.querySelector('.btn-save').addEventListener('click', enregistrerVente);
 

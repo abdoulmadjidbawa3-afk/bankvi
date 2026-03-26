@@ -887,3 +887,13 @@ html, body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ===== FIX ESPACE VIDE DESKTOP ===== */
+@media (min-width: 768px) {
+  body {
+    min-height: 100vh;
+  }
+  .main-content {
+    min-height: calc(100vh - 60px);
+  }
+}
