@@ -119,17 +119,22 @@ app.post('/api/auth/register', async (req, res) => {
   const db = await getDb();
   const { nom, boutique, tel, password } = req.body;
 
-  const existe = db.exec(`SELECT id FROM utilisateurs WHERE tel = '${tel}'`);
+  // Vérifier si le numéro existe déjà
+  const existe = db.exec("SELECT id FROM utilisateurs WHERE tel = ?", [tel]);
   if (existe[0]?.values.length > 0) {
     return res.status(400).json({ message: 'Ce numéro est déjà utilisé' });
   }
 
+  // Hash du mot de passe
   const hash = crypto.createHash('sha256').update(password).digest('hex');
+
+  // Insertion
   db.run(
-    `INSERT INTO utilisateurs (nom, boutique, tel, password) VALUES (?, ?, ?, ?)`,
+    "INSERT INTO utilisateurs (nom, boutique, tel, password) VALUES (?, ?, ?, ?)",
     [nom, boutique, tel, hash]
   );
   sauvegarderDb();
+
   res.json({ message: 'Compte créé avec succès' });
 });
 
@@ -138,9 +143,8 @@ app.post('/api/auth/login', async (req, res) => {
   const { identifiant, password } = req.body;
   const hash = crypto.createHash('sha256').update(password).digest('hex');
 
-  const result = db.exec(
-    `SELECT * FROM utilisateurs WHERE (tel = '${identifiant}') AND password = '${hash}'`
-  );
+  // Vérification
+  const result = db.exec("SELECT * FROM utilisateurs WHERE tel = ? AND password = ?", [identifiant, hash]);
 
   if (!result[0]?.values.length) {
     return res.status(401).json({ message: 'Identifiants incorrects' });
@@ -149,15 +153,11 @@ app.post('/api/auth/login', async (req, res) => {
   const u = result[0].values[0];
   const token = crypto.randomBytes(32).toString('hex');
 
-  db.run(`UPDATE utilisateurs SET token = '${token}' WHERE id = ${u[0]}`);
+  db.run("UPDATE utilisateurs SET token = ? WHERE id = ?", [token, u[0]]);
   sauvegarderDb();
 
   res.json({
     token,
     user: { id: u[0], nom: u[1], boutique: u[2], tel: u[3] }
   });
-});
-
-app.listen(PORT, () => {
-  console.log(`BANKVI tourne sur port ${PORT}`);
 });
