@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BANKVI — Stocks</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo">BANK<span>VI</span></div>
+    <div class="nav-date" id="nav-date"></div>
+    <div class="nav-avatar">KM</div>
+  </nav>
+
+  <main class="main-content">
+
+    <!-- MÉTRIQUES STOCK -->
+    <div class="metrics-grid three-cols">
+      <div class="metric-card">
+        <p class="metric-label">Produits</p>
+        <h2 class="metric-value green">24</h2>
+        <p class="metric-sub">en stock</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Stock bas</p>
+        <h2 class="metric-value warn">4</h2>
+        <p class="metric-sub">à renouveler</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Rupture</p>
+        <h2 class="metric-value red">2</h2>
+        <p class="metric-sub">urgents</p>
+      </div>
+    </div>
+
+    <!-- BOUTON AJOUTER -->
+    <button class="btn-primary" onclick="ouvrirModalStock()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Ajouter un produit
+    </button>
+
+    <!-- RECHERCHE -->
+    <div class="search-bar">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <circle cx="6" cy="6" r="4" stroke="#a0a0a0" stroke-width="1.5"/>
+        <path d="M9.5 9.5L12 12" stroke="#a0a0a0" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input type="text" placeholder="Rechercher un produit..." id="search-input">
+    </div>
+
+    <!-- FILTRES -->
+    <div class="filters-row">
+      <button class="filter-btn active">Tous (24)</button>
+      <button class="filter-btn">Rupture (2)</button>
+      <button class="filter-btn">Stock bas (4)</button>
+      <button class="filter-btn">OK</button>
+    </div>
+
+    <!-- RUPTURE -->
+    <p class="list-section-label">Rupture — urgent</p>
+    <div class="cards-list">
+
+      <div class="stock-card danger">
+        <div class="sc-top">
+          <div class="lc-left">
+            <div class="lc-avatar red">HP</div>
+            <div>
+              <p class="lc-name">Huile de palme</p>
+              <p class="lc-sub">Alimentation</p>
+            </div>
+          </div>
+          <span class="badge-stock out">Rupture</span>
+        </div>
+        <div class="stock-bar-wrap">
+          <div class="stock-bar-labels">
+            <span>0 bidons restants</span>
+            <span>Max: 50</span>
+          </div>
+          <div class="stock-bar">
+            <div class="stock-bar-fill out" style="width:0%"></div>
+          </div>
+        </div>
+        <p class="stock-price">Prix unitaire : <strong>3 100 F</strong></p>
+        <div class="list-card-actions">
+          <button class="btn-success-sm">Commander</button>
+          <button class="btn-neutral-sm">Modifier</button>
+        </div>
+      </div>
+
+      <div class="stock-card danger">
+        <div class="sc-top">
+          <div class="lc-left">
+            <div class="lc-avatar red">RI</div>
+            <div>
+              <p class="lc-name">Riz importé 50kg</p>
+              <p class="lc-sub">Alimentation</p>
+            </div>
+          </div>
+          <span class="badge-stock out">Rupture</span>
+        </div>
+        <div class="stock-bar-wrap">
+          <div class="stock-bar-labels">
+            <span>1 sac restant</span>
+            <span>Max: 30</span>
+          </div>
+          <div class="stock-bar">
+            <div class="stock-bar-fill out" style="width:3%"></div>
+          </div>
+        </div>
+        <p class="stock-price">Prix unitaire : <strong>11 000 F</strong></p>
+        <div class="list-card-actions">
+          <button class="btn-success-sm">Commander</button>
+          <button class="btn-neutral-sm">Modifier</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- STOCK BAS -->
+    <p class="list-section-label" style="margin-top:1.25rem;">Stock bas — à surveiller</p>
+    <div class="cards-list">
+
+      <div class="stock-card warn">
+        <div class="sc-top">
+          <div class="lc-left">
+            <div class="lc-avatar blue">SC</div>
+            <div>
+              <p class="lc-name">Sucre cristal</p>
+              <p class="lc-sub">Alimentation</p>
+            </div>
+          </div>
+          <span class="badge-stock low">Stock bas</span>
+        </div>
+        <div class="stock-bar-wrap">
+          <div class="stock-bar-labels">
+            <span>5 sacs restants</span>
+            <span>Max: 40</span>
+          </div>
+          <div class="stock-bar">
+            <div class="stock-bar-fill low" style="width:12%"></div>
+          </div>
+        </div>
+        <p class="stock-price">Prix unitaire : <strong>5 500 F</strong></p>
+        <div class="list-card-actions">
+          <button class="btn-success-sm">Commander</button>
+          <button class="btn-neutral-sm">Modifier</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- DISPONIBLES -->
+    <p class="list-section-label" style="margin-top:1.25rem;">Disponibles</p>
+    <div class="cards-list">
+
+      <div class="stock-card">
+        <div class="sc-top">
+          <div class="lc-left">
+            <div class="lc-avatar green">SM</div>
+            <div>
+              <p class="lc-name">Savon de ménage</p>
+              <p class="lc-sub">Hygiène</p>
+            </div>
+          </div>
+          <span class="badge-stock ok">OK</span>
+        </div>
+        <div class="stock-bar-wrap">
+          <div class="stock-bar-labels">
+            <span>38 barres restantes</span>
+            <span>Max: 50</span>
+          </div>
+          <div class="stock-bar">
+            <div class="stock-bar-fill ok" style="width:76%"></div>
+          </div>
+        </div>
+        <p class="stock-price">Prix unitaire : <strong>450 F</strong></p>
+        <div class="list-card-actions">
+          <button class="btn-success-sm">Réapprovisionner</button>
+          <button class="btn-neutral-sm">Modifier</button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- NAVIGATION BAS -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="bn-item">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+      Accueil
+    </a>
+    <a href="dettes.html" class="bn-item">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M9 6v3l2 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Dettes
+    </a>
+    <a href="ventes.html" class="bn-item">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><path d="M3 12l3-3 3 3 3-4 3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Ventes
+    </a>
+    <a href="stocks.html" class="bn-item active">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 9h6M9 6v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Stocks
+    </a>
+    <a href="profil.html" class="bn-item">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 15c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Profil
+    </a>
+  </nav>
+
+  <!-- MODAL STOCK -->
+  <div class="modal-bg" id="modal-stock">
+    <div class="modal">
+      <h3 class="modal-title">Nouveau produit</h3>
+      <div class="field">
+        <label>Nom du produit</label>
+        <input type="text" placeholder="Ex: Riz importé 50kg">
+      </div>
+      <div class="field">
+        <label>Catégorie</label>
+        <select>
+          <option>Alimentation</option>
+          <option>Hygiène</option>
+          <option>Boissons</option>
+          <option>Textile</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Quantité initiale</label>
+          <input type="number" placeholder="Ex: 30">
+        </div>
+        <div class="field">
+          <label>Seuil d'alerte</label>
+          <input type="number" placeholder="Ex: 5">
+        </div>
+      </div>
+      <div class="field">
+        <label>Prix unitaire (FCFA)</label>
+        <input type="number" placeholder="Ex: 11000">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="fermerModalStock()">Annuler</button>
+        <button class="btn-save" onclick="fermerModalStock()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/stocks.js"></script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+</script>
+</body>
+</html>

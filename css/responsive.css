@@ -1,0 +1,148 @@
+/* ===== RESPONSIVE — DESKTOP ===== */
+
+/* TABLETTE — 768px et plus */
+@media (min-width: 768px) {
+
+  body {
+    padding-bottom: 0;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    padding: 1rem 2rem;
+  }
+
+  /* CACHER LA NAV BAS — on va avoir une sidebar */
+  .bottom-nav {
+    display: none;
+  }
+
+  /* LAYOUT PRINCIPAL — sidebar + contenu */
+  body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    grid-template-rows: 60px 1fr;
+    min-height: 100vh;
+  }
+
+  .navbar {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    grid-column: 1;
+    grid-row: 2;
+    background: var(--bg-primary);
+    border-right: 0.5px solid var(--border);
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .sidebar-item:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+  }
+
+  .sidebar-item.active {
+    background: var(--blue-light);
+    color: var(--blue-mid);
+    font-weight: 500;
+  }
+
+  .sidebar-item svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* MAIN CONTENT */
+ .main-content {
+    grid-column: 2;
+    grid-row: 2;
+    max-width: 100%;
+    width: 100%;
+    padding: 1.5rem 2rem;
+  }
+  /* HERO CARD */
+  .hero-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 0;
+  }
+
+  .hero-left {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .hero-badge {
+    grid-column: 2;
+    grid-row: 1;
+    position: static;
+  }
+
+  .hero-stats {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .hero-amount { font-size: 42px; }
+
+  /* MÉTRIQUES — 4 colonnes sur desktop */
+  .metrics-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* SECTIONS CÔTE À CÔTE */
+  .sections-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+}
+
+/* GRAND ÉCRAN — 1200px et plus */
+@media (min-width: 1200px) {
+
+  .sidebar {
+    width: 260px;
+  }
+
+  .main-content {
+    padding: 2rem 3rem;
+  }
+
+  .hero-amount { font-size: 48px; }
+
+  .metrics-grid {
+    gap: 16px;
+  }
+
+  .metric-card {
+    padding: 1.25rem;
+  }
+
+  .metric-value {
+    font-size: 26px;
+  }
+}

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BANKVI — Profil</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo">BANK<span>VI</span></div>
+    <div class="nav-date" id="nav-date"></div>
+    <div class="nav-avatar">KM</div>
+  </nav>
+
+  <main class="main-content">
+
+    <!-- HERO PROFIL -->
+    <section class="hero-card profil-hero">
+      <div class="profil-info">
+        <div class="profil-avatar">KM</div>
+        <div>
+          <h2 class="profil-name">Kofi Mensah</h2>
+          <p class="profil-shop">Boutique Mensah — Lomé, Togo</p>
+          <p class="profil-since">Membre depuis mars 2026</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="metrics-grid three-cols" style="margin-bottom:1.25rem;">
+      <div class="metric-card">
+        <p class="metric-label">Ce mois</p>
+        <h2 class="metric-value blue">412k</h2>
+        <p class="metric-sub">FCFA</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Ventes</p>
+        <h2 class="metric-value green">87</h2>
+        <p class="metric-sub">totales</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Produits</p>
+        <h2 class="metric-value blue">24</h2>
+        <p class="metric-sub">actifs</p>
+      </div>
+    </div>
+
+    <!-- MON COMMERCE -->
+    <p class="list-section-label">Mon commerce</p>
+    <div class="cards-list menu-list">
+      <a href="#" class="menu-item">
+        <div class="lc-left">
+          <div class="menu-icon blue">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="6" r="3" stroke="#185FA5" stroke-width="1.5"/>
+              <path d="M2 14c0-3 2.7-4 6-4s6 1 6 4" stroke="#185FA5" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <p class="lc-name">Informations du compte</p>
+            <p class="lc-sub">Nom, téléphone, boutique</p>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M6 4l4 4-4 4" stroke="#a0a0a0" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </a>
+      <a href="#" class="menu-item">
+        <div class="lc-left">
+          <div class="menu-icon green">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="3" width="12" height="10" rx="1.5" stroke="#1D9E75" stroke-width="1.5"/>
+              <path d="M5 7h6M5 10h4" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <p class="lc-name">Points de vente</p>
+            <p class="lc-sub">2 points actifs</p>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M6 4l4 4-4 4" stroke="#a0a0a0" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </a>
+      <a href="#" class="menu-item">
+        <div class="lc-left">
+          <div class="menu-icon amber">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="5" stroke="#BA7517" stroke-width="1.5"/>
+              <path d="M8 5v3l2 2" stroke="#BA7517" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <p class="lc-name">Devise et langue</p>
+            <p class="lc-sub">FCFA — Français</p>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M6 4l4 4-4 4" stroke="#a0a0a0" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- PRÉFÉRENCES -->
+    <p class="list-section-label" style="margin-top:1.25rem;">Préférences</p>
+    <div class="cards-list menu-list">
+      <div class="menu-item">
+        <div class="lc-left">
+          <div class="menu-icon blue">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 2a6 6 0 100 12A6 6 0 008 2z" stroke="#185FA5" stroke-width="1.5"/>
+              <path d="M8 5v3l2 2" stroke="#185FA5" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <p class="lc-name">Alertes de stock</p>
+            <p class="lc-sub">Notification rupture</p>
+          </div>
+        </div>
+        <div class="toggle on" onclick="basculerToggle(this)">
+          <div class="toggle-thumb"></div>
+        </div>
+      </div>
+      <div class="menu-item">
+        <div class="lc-left">
+          <div class="menu-icon red">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="6" stroke="#D85A30" stroke-width="1.5"/>
+              <path d="M8 5v3l2 2" stroke="#D85A30" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <p class="lc-name">Rappels de dettes</p>
+            <p class="lc-sub">Alerte dettes en retard</p>
+          </div>
+        </div>
+        <div class="toggle on" onclick="basculerToggle(this)">
+          <div class="toggle-thumb"></div>
+        </div>
+      </div>
+      <div class="menu-item">
+        <div class="lc-left">
+          <div class="menu-icon green">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="2" width="12" height="12" rx="2" stroke="#1D9E75" stroke-width="1.5"/>
+              <path d="M5 8h6M8 5v6" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <p class="lc-name">Mode hors ligne</p>
+            <p class="lc-sub">Fonctionne sans internet</p>
+          </div>
+        </div>
+        <div class="toggle on" onclick="basculerToggle(this)">
+          <div class="toggle-thumb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AIDE -->
+    <p class="list-section-label" style="margin-top:1.25rem;">Aide & Support</p>
+    <div class="cards-list menu-list">
+      <a href="#" class="menu-item">
+        <div class="lc-left">
+          <div class="menu-icon blue">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="6" stroke="#185FA5" stroke-width="1.5"/>
+              <path d="M8 10V9c1.1 0 2-.9 2-2S9.1 5 8 5 6 5.9 6 7" stroke="#185FA5" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="8" cy="12" r="0.8" fill="#185FA5"/>
+            </svg>
+          </div>
+          <div>
+            <p class="lc-name">Guide d'utilisation</p>
+            <p class="lc-sub">Comment utiliser BANKVI</p>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M6 4l4 4-4 4" stroke="#a0a0a0" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </a>
+      <a href="#" class="menu-item">
+        <div class="lc-left">
+          <div class="menu-icon amber">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 4h12v8a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" stroke="#BA7517" stroke-width="1.5"/>
+              <path d="M2 4l6 5 6-5" stroke="#BA7517" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <p class="lc-name">Contacter le support</p>
+            <p class="lc-sub">Réponse en moins de 24h</p>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M6 4l4 4-4 4" stroke="#a0a0a0" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- DÉCONNEXION -->
+    <button class="btn-logout">Se déconnecter</button>
+    <p class="version-text">BANKVI v1.0.0 — Fait au Togo 🇹🇬</p>
+
+  </main>
+
+  <!-- NAVIGATION BAS -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="bn-item">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+      Accueil
+    </a>
+    <a href="dettes.html" class="bn-item">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M9 6v3l2 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Dettes
+    </a>
+    <a href="ventes.html" class="bn-item">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><path d="M3 12l3-3 3 3 3-4 3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Ventes
+    </a>
+    <a href="stocks.html" class="bn-item">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 9h6M9 6v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Stocks
+    </a>
+    <a href="profil.html" class="bn-item active">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 15c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Profil
+    </a>
+  </nav>
+
+  <script src="js/app.js"></script>
+  <script src="js/profil.js"></script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+</script>
+</body>
+</html>

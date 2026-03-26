@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BANKVI — Dettes</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-logo">BANK<span>VI</span></div>
+    <div class="nav-date" id="nav-date"></div>
+    <div class="nav-avatar">KM</div>
+  </nav>
+
+  <!-- CONTENU PRINCIPAL -->
+  <main class="main-content">
+
+    <!-- HERO -->
+    <section class="hero-card">
+      <div class="hero-left">
+        <p class="hero-label">Total dettes en cours</p>
+        <h1 class="hero-amount">89 000 F</h1>
+        <p class="hero-sub">5 clients concernés</p>
+      </div>
+      <div class="hero-badge">En cours</div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hs-label">En retard</span>
+          <span class="hs-val warn">43 500 F</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hs-label">Cette semaine</span>
+          <span class="hs-val">33 000 F</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hs-label">Remboursé</span>
+          <span class="hs-val green">42 000 F</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOUTON AJOUTER -->
+    <button class="btn-primary" onclick="ouvrirModal()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Ajouter une dette
+    </button>
+
+    <!-- FILTRES -->
+    <div class="filters-row">
+      <button class="filter-btn active">Toutes (5)</button>
+      <button class="filter-btn">En retard (2)</button>
+      <button class="filter-btn">Cette semaine</button>
+      <button class="filter-btn">Payées</button>
+    </div>
+
+    <!-- DETTES URGENTES -->
+    <p class="list-section-label">En retard — priorité</p>
+
+    <div class="cards-list">
+      <div class="list-card urgent">
+        <div class="lc-left">
+          <div class="lc-avatar red">AK</div>
+          <div>
+            <p class="lc-name">Afi Koffi</p>
+            <p class="lc-sub">Tissu wax x3 — 20 mars</p>
+          </div>
+        </div>
+        <div class="lc-right">
+          <p class="lc-amount red">25 000 F</p>
+          <p class="lc-days">il y a 5 jours</p>
+        </div>
+      </div>
+      <div class="list-card-actions">
+        <button class="btn-success-sm">Marquer payé</button>
+        <button class="btn-neutral-sm">Rappel envoyé</button>
+      </div>
+
+      <div class="list-card urgent">
+        <div class="lc-left">
+          <div class="lc-avatar red">KA</div>
+          <div>
+            <p class="lc-name">Kwame Asante</p>
+            <p class="lc-sub">Riz 50kg x2 — 23 mars</p>
+          </div>
+        </div>
+        <div class="lc-right">
+          <p class="lc-amount red">18 500 F</p>
+          <p class="lc-days">il y a 2 jours</p>
+        </div>
+      </div>
+      <div class="list-card-actions">
+        <button class="btn-success-sm">Marquer payé</button>
+        <button class="btn-neutral-sm">Rappel envoyé</button>
+      </div>
+    </div>
+
+    <!-- DETTES RÉCENTES -->
+    <p class="list-section-label" style="margin-top:1.25rem;">Récents</p>
+
+    <div class="cards-list">
+      <div class="list-card">
+        <div class="lc-left">
+          <div class="lc-avatar blue">MD</div>
+          <div>
+            <p class="lc-name">Mawuli Dodzi</p>
+            <p class="lc-sub">Huile de palme x5</p>
+          </div>
+        </div>
+        <div class="lc-right">
+          <p class="lc-amount red">12 000 F</p>
+          <p class="lc-days">aujourd'hui</p>
+        </div>
+      </div>
+      <div class="list-card-actions">
+        <button class="btn-success-sm">Marquer payé</button>
+        <button class="btn-neutral-sm">Rappel envoyé</button>
+      </div>
+
+      <div class="list-card">
+        <div class="lc-left">
+          <div class="lc-avatar green">YA</div>
+          <div>
+            <p class="lc-name">Yawa Agbeko</p>
+            <p class="lc-sub">Sucre cristal 25kg</p>
+          </div>
+        </div>
+        <div class="lc-right">
+          <p class="lc-amount red">9 000 F</p>
+          <p class="lc-days">hier</p>
+        </div>
+      </div>
+      <div class="list-card-actions">
+        <button class="btn-success-sm">Marquer payé</button>
+        <button class="btn-neutral-sm">Rappel envoyé</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- NAVIGATION BAS -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="bn-item">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+      Accueil
+    </a>
+    <a href="dettes.html" class="bn-item active">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M9 6v3l2 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Dettes
+    </a>
+    <a href="ventes.html" class="bn-item">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><path d="M3 12l3-3 3 3 3-4 3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Ventes
+    </a>
+    <a href="stocks.html" class="bn-item">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 9h6M9 6v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Stocks
+    </a>
+    <a href="profil.html" class="bn-item">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 15c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Profil
+    </a>
+  </nav>
+
+  <!-- MODAL AJOUTER DETTE -->
+  <div class="modal-bg" id="modal-dette">
+    <div class="modal">
+      <h3 class="modal-title">Nouvelle dette client</h3>
+      <div class="field">
+        <label>Nom du client</label>
+        <input type="text" placeholder="Ex: Afi Koffi" id="input-nom">
+      </div>
+      <div class="field">
+        <label>Produit(s) acheté(s)</label>
+        <input type="text" placeholder="Ex: Riz 50kg x2" id="input-produit">
+      </div>
+      <div class="field">
+        <label>Montant dû (FCFA)</label>
+        <input type="number" placeholder="Ex: 25000" id="input-montant">
+      </div>
+      <div class="field">
+        <label>Date de remboursement prévue</label>
+        <input type="date" id="input-date">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="fermerModal()">Annuler</button>
+        <button class="btn-save" onclick="fermerModal()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/dettes.js"></script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+</script>
+</body>
+</html>
