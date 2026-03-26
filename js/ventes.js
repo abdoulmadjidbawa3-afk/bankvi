@@ -20,7 +20,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-// ===== CHARGER VENTES =====
 async function chargerVentes() {
   try {
     const res = await fetch(`${API}/ventes`);
@@ -76,7 +75,6 @@ function afficherVentes(ventes) {
   `).join('');
 }
 
-// ===== ENREGISTRER VENTE =====
 async function enregistrerVente() {
   const produit  = document.querySelector('#modal-vente input[type="text"]').value.trim();
   const inputs   = document.querySelectorAll('#modal-vente input[type="number"]');
@@ -90,8 +88,8 @@ async function enregistrerVente() {
     return;
   }
 
- try {
-    const response = await fetch(`${API}/ventes`, {
+  try {
+    await fetch(`${API}/ventes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -103,7 +101,6 @@ async function enregistrerVente() {
       })
     });
 
-    // Si vente à crédit → créer automatiquement une dette
     if (mode === 'À crédit' && client) {
       await fetch(`${API}/dettes`, {
         method: 'POST',
@@ -122,6 +119,7 @@ async function enregistrerVente() {
   } catch(e) {
     alert('Erreur — serveur non disponible');
   }
+}
 
 document.querySelector('.btn-save').addEventListener('click', enregistrerVente);
 
