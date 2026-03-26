@@ -1,16 +1,14 @@
 const API = window.location.origin + '/api';
 
 // ===== PROTECTION =====
-function verifierConnexion() {
+(function() {
   const token = localStorage.getItem('bankvi_token');
-  const pageCourante = window.location.pathname.split('/').pop();
-  if (!token && pageCourante !== 'login.html') {
+  const page = window.location.pathname.split('/').pop();
+  const pagesPubliques = ['login.html', ''];
+  if (!token && !pagesPubliques.includes(page)) {
     window.location.href = 'login.html';
-    return false;
   }
-  return true;
-}
-if (!verifierConnexion()) throw new Error('Non connecté');
+})();
 
 // ===== DATE =====
 function afficherDate() {
