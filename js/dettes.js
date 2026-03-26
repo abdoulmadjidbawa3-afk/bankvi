@@ -17,16 +17,11 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 });
 
 // ===== CHARGER DETTES =====
-async function chargerDettes() {
-  try {
-    const res = await fetch(`${API}/dettes`);
-    const dettes = await res.json();
-    afficherDettes(dettes);
-    mettreAJourHero(dettes);
-  } catch(e) {
-    console.log('Serveur non disponible');
-  }
+async function initialiserDettes() {
+  const injected = await injecterDemoDettes(document.querySelector('.cards-list'));
+  if (!injected) chargerDettes();
 }
+initialiserDettes();
 
 function mettreAJourHero(dettes) {
   const enCours = dettes.filter(d => d.statut === 'en_cours');

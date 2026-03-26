@@ -107,7 +107,25 @@ app.get('/api/dashboard', async (req, res) => {
   const stocks = db.exec(`
     SELECT COUNT(*) FROM stocks WHERE quantite <= seuil_alerte
   `);
+// ===== ROUTE STATUT NOUVEAU COMPTE =====
+app.get('/api/statut', async (req, res) => {
+  const db = await getDb();
 
+  const ventes = db.exec('SELECT COUNT(*) FROM ventes');
+  const dettes = db.exec('SELECT COUNT(*) FROM dettes');
+  const stocks = db.exec('SELECT COUNT(*) FROM stocks');
+
+  const nbVentes = ventes[0]?.values[0][0] || 0;
+  const nbDettes = dettes[0]?.values[0][0] || 0;
+  const nbStocks = stocks[0]?.values[0][0] || 0;
+
+  res.json({
+    premiereVente:  nbVentes === 0,
+    premiereDette:  nbDettes === 0,
+    premierStock:   nbStocks === 0,
+    nouveau:        nbVentes === 0 && nbDettes === 0 && nbStocks === 0
+  });
+});
   res.json({
     ventes_jour:     ventes[0]?.values[0][0] || 0,
     ventes_count:    ventes[0]?.values[0][1] || 0,

@@ -24,16 +24,12 @@ document.getElementById('search-input').addEventListener('input', function() {
 });
 
 // ===== CHARGER STOCKS =====
-async function chargerStocks() {
-  try {
-    const res = await fetch(`${API}/stocks`);
-    const stocks = await res.json();
-    afficherStocks(stocks);
-    mettreAJourMetriques(stocks);
-  } catch(e) {
-    console.log('Serveur non disponible');
-  }
+async function initialiserStocks() {
+  const container = document.querySelector('.cards-list');
+  const injected = await injecterDemoStocks(container);
+  if (!injected) chargerStocks();
 }
+initialiserStocks();
 
 function mettreAJourMetriques(stocks) {
   const total    = stocks.length;

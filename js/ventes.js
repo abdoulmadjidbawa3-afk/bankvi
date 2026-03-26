@@ -20,16 +20,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-async function chargerVentes() {
-  try {
-    const res = await fetch(`${API}/ventes`);
-    const ventes = await res.json();
-    afficherVentes(ventes);
-    mettreAJourHero(ventes);
-  } catch(e) {
-    console.log('Serveur non disponible');
-  }
+async function initialiserVentes() {
+  const container = document.querySelector('.cards-list');
+  const injected = await injecterDemoVentes(container);
+  if (!injected) chargerVentes();
 }
+initialiserVentes();
 
 function mettreAJourHero(ventes) {
   const aujourd = new Date().toLocaleDateString('fr-FR');
