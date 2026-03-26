@@ -117,8 +117,6 @@ app.get('/api/dashboard', async (req, res) => {
   });
 });
 
-const crypto = require('crypto');
-
 // ===== AUTH =====
 app.post('/api/auth/register', async (req, res) => {
   const db = await getDb();
