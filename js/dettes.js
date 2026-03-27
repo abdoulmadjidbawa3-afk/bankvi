@@ -101,4 +101,10 @@ async function marquerPaye(id) {
 // Bouton enregistrer dans le modal
 document.querySelector('.btn-save').addEventListener('click', enregistrerDette);
 
-chargerDettes();
+async function initialiserDettes() {
+  const container = document.querySelector('.cards-list');
+  if (!container) return;
+  const injected = await injecterDemoDettes(container);
+  if (!injected) chargerDettes();
+}
+initialiserDettes();

@@ -116,4 +116,8 @@ function afficherDettesRecentes(dettes) {
   `).join('');
 }
 
-chargerDashboard();
+async function initialiserDashboard() {
+  const estDemo = await injecterDemoDashboard();
+  if (!estDemo) chargerDashboard();
+}
+initialiserDashboard();

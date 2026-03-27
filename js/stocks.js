@@ -132,4 +132,10 @@ async function enregistrerStock() {
 
 document.querySelector('.btn-save').addEventListener('click', enregistrerStock);
 
-chargerStocks();
+async function initialiserStocks() {
+  const container = document.querySelector('.cards-list');
+  if (!container) return;
+  const injected = await injecterDemoStocks(container);
+  if (!injected) chargerStocks();
+}
+initialiserStocks();

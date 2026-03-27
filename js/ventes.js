@@ -119,4 +119,10 @@ async function enregistrerVente() {
 
 document.querySelector('.btn-save').addEventListener('click', enregistrerVente);
 
-chargerVentes();
+async function initialiserVentes() {
+  const container = document.querySelector('.cards-list');
+  if (!container) return;
+  const injected = await injecterDemoVentes(container);
+  if (!injected) chargerVentes();
+}
+initialiserVentes();
