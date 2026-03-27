@@ -18,7 +18,6 @@ const user = JSON.parse(localStorage.getItem('bankvi_user') || '{}');
 const avatar = document.querySelector('.nav-avatar');
 if (avatar && user.nom) {
   avatar.textContent = user.nom.substring(0, 2).toUpperCase();
-  avatar.title = user.nom;
 }
 
 function creerSidebar() {
@@ -61,25 +60,19 @@ function joursDepuis(dateStr) {
 async function chargerDashboard() {
   const hero = document.querySelector('.hero-amount');
   if (!hero) return;
-
   try {
     const res  = await fetch(`${API}/dashboard`, { headers: getHeaders() });
     const data = await res.json();
-
     document.querySelector('.hero-amount').textContent = formaterMontant(data.ventes_jour);
     document.querySelector('.hero-sub').textContent    = data.ventes_count + ' ventes enregistrées';
-
     const metriques = document.querySelectorAll('.metric-value');
     if (metriques[0]) metriques[0].textContent = formaterMontant(data.dettes_total);
     if (metriques[1]) metriques[1].textContent = data.stocks_critique;
-    if (metriques[2]) metriques[2].textContent = formaterMontant(0);
+    if (metriques[2]) metriques[2].textContent = '0 F';
     if (metriques[3]) metriques[3].textContent = '1';
-
     const resD   = await fetch(`${API}/dettes`, { headers: getHeaders() });
     const dettes = await resD.json();
-    const enCours = dettes.filter(d => d.statut === 'en_cours');
-    afficherDettesRecentes(enCours.slice(0, 3));
-
+    afficherDettesRecentes(dettes.filter(d => d.statut === 'en_cours').slice(0, 3));
   } catch(e) {
     console.log('Erreur dashboard');
   }
@@ -88,33 +81,21 @@ async function chargerDashboard() {
 function afficherDettesRecentes(dettes) {
   const liste = document.querySelector('.cards-list');
   if (!liste) return;
-
   if (dettes.length === 0) {
-    liste.innerHTML = `
-      <div style="padding:1.5rem;text-align:center;">
-        <p style="color:#a0a0a0;font-size:14px;">Aucune dette en cours</p>
-        <a href="dettes.html" style="color:#185FA5;font-size:13px;margin-top:6px;display:block;">
-          Ajouter une dette →
-        </a>
-      </div>`;
+    liste.innerHTML = `<div style="padding:1.5rem;text-align:center;"><p style="color:#a0a0a0;font-size:14px;">Aucune dette en cours</p><a href="dettes.html" style="color:#185FA5;font-size:13px;margin-top:6px;display:block;">Ajouter une dette →</a></div>`;
     return;
   }
-
   liste.innerHTML = dettes.map(d => `
     <div class="list-card">
       <div class="lc-left">
         <div class="lc-avatar red">${d.client.substring(0,2).toUpperCase()}</div>
-        <div>
-          <p class="lc-name">${d.client}</p>
-          <p class="lc-sub">${d.produit}</p>
-        </div>
+        <div><p class="lc-name">${d.client}</p><p class="lc-sub">${d.produit}</p></div>
       </div>
       <div class="lc-right">
         <p class="lc-amount red">${formaterMontant(d.montant)}</p>
         <p class="lc-days">${joursDepuis(d.date_creation)}</p>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 chargerDashboard();

@@ -32,23 +32,18 @@ function mettreAJourHero(dettes) {
 }
 
 function afficherDettes(dettes) {
-  const urgentes  = dettes.filter(d => d.statut === 'en_cours');
   const container = document.querySelector('.cards-list');
   if (!container) return;
-
-  if (urgentes.length === 0) {
-    container.innerHTML = '<p style="padding:1rem;text-align:center;color:#a0a0a0;">Aucune dette en cours</p>';
+  const enCours = dettes.filter(d => d.statut === 'en_cours');
+  if (enCours.length === 0) {
+    container.innerHTML = '<p style="padding:1.5rem;text-align:center;color:#a0a0a0;">Aucune dette en cours</p>';
     return;
   }
-
-  container.innerHTML = urgentes.map(d => `
+  container.innerHTML = enCours.map(d => `
     <div class="list-card urgent" id="dette-${d.id}">
       <div class="lc-left">
         <div class="lc-avatar red">${d.client.substring(0,2).toUpperCase()}</div>
-        <div>
-          <p class="lc-name">${d.client}</p>
-          <p class="lc-sub">${d.produit}</p>
-        </div>
+        <div><p class="lc-name">${d.client}</p><p class="lc-sub">${d.produit}</p></div>
       </div>
       <div class="lc-right">
         <p class="lc-amount red">${Number(d.montant).toLocaleString('fr-FR')} F</p>
@@ -58,8 +53,7 @@ function afficherDettes(dettes) {
     <div class="list-card-actions">
       <button class="btn-success-sm" onclick="marquerPaye(${d.id})">Marquer payé</button>
       <button class="btn-neutral-sm">Rappel envoyé</button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 async function chargerDettes() {
@@ -90,6 +84,10 @@ async function enregistrerDette() {
       headers: getHeaders(),
       body: JSON.stringify({ client, produit, montant: Number(montant), date_remboursement })
     });
+    document.getElementById('input-nom').value     = '';
+    document.getElementById('input-produit').value = '';
+    document.getElementById('input-montant').value = '';
+    document.getElementById('input-date').value    = '';
     fermerModal();
     chargerDettes();
   } catch(e) {
@@ -99,16 +97,13 @@ async function enregistrerDette() {
 
 async function marquerPaye(id) {
   try {
-    await fetch(`${API}/dettes/${id}/payer`, {
-      method: 'PUT',
-      headers: getHeaders()
-    });
+    await fetch(`${API}/dettes/${id}/payer`, { method: 'PUT', headers: getHeaders() });
     chargerDettes();
   } catch(e) {
     alert('Erreur — serveur non disponible');
   }
 }
 
-document.querySelector('.btn-save').addEventListener('click', enregistrerDette);
+document.getElementById('btn-enregistrer-dette').addEventListener('click', enregistrerDette);
 
 chargerDettes();
