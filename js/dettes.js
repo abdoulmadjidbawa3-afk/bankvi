@@ -8,20 +8,12 @@ function fermerModal() {
   document.getElementById('modal-dette').classList.remove('open');
 }
 
-// Filtres
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   });
 });
-
-// ===== CHARGER DETTES =====
-async function initialiserDettes() {
-  const injected = await injecterDemoDettes(document.querySelector('.cards-list'));
-  if (!injected) chargerDettes();
-}
-initialiserDettes();
 
 function mettreAJourHero(dettes) {
   const enCours = dettes.filter(d => d.statut === 'en_cours');
@@ -63,7 +55,17 @@ function afficherDettes(dettes) {
   `).join('');
 }
 
-// ===== ENREGISTRER DETTE =====
+async function chargerDettes() {
+  try {
+    const res = await fetch(`${API}/dettes`);
+    const dettes = await res.json();
+    afficherDettes(dettes);
+    mettreAJourHero(dettes);
+  } catch(e) {
+    console.log('Erreur dettes');
+  }
+}
+
 async function enregistrerDette() {
   const client = document.getElementById('input-nom').value.trim();
   const produit = document.getElementById('input-produit').value.trim();
@@ -88,7 +90,6 @@ async function enregistrerDette() {
   }
 }
 
-// ===== MARQUER PAYÉ =====
 async function marquerPaye(id) {
   try {
     await fetch(`${API}/dettes/${id}/payer`, { method: 'PUT' });
@@ -98,13 +99,17 @@ async function marquerPaye(id) {
   }
 }
 
-// Bouton enregistrer dans le modal
 document.querySelector('.btn-save').addEventListener('click', enregistrerDette);
 
+// ===== DÉMARRAGE =====
 async function initialiserDettes() {
   const container = document.querySelector('.cards-list');
   if (!container) return;
-  const injected = await injecterDemoDettes(container);
-  if (!injected) chargerDettes();
+  if (typeof injecterDemoDettes === 'function') {
+    const injected = await injecterDemoDettes(container);
+    if (!injected) chargerDettes();
+  } else {
+    chargerDettes();
+  }
 }
 initialiserDettes();

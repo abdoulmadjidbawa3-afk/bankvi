@@ -20,18 +20,9 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-async function initialiserVentes() {
-  const container = document.querySelector('.cards-list');
-  const injected = await injecterDemoVentes(container);
-  if (!injected) chargerVentes();
-}
-initialiserVentes();
-
 function mettreAJourHero(ventes) {
   const aujourd = new Date().toLocaleDateString('fr-FR');
-  const ventesJour = ventes.filter(v => {
-    return new Date(v.date).toLocaleDateString('fr-FR') === aujourd;
-  });
+  const ventesJour = ventes.filter(v => new Date(v.date).toLocaleDateString('fr-FR') === aujourd);
   const total = ventesJour.reduce((s, v) => s + v.montant, 0);
   const hero = document.querySelector('.hero-amount');
   if (hero) hero.textContent = Number(total).toLocaleString('fr-FR') + ' F';
@@ -45,15 +36,24 @@ function getBadgeMode(mode) {
   return 'partial';
 }
 
+async function chargerVentes() {
+  try {
+    const res = await fetch(`${API}/ventes`);
+    const ventes = await res.json();
+    afficherVentes(ventes);
+    mettreAJourHero(ventes);
+  } catch(e) {
+    console.log('Erreur ventes');
+  }
+}
+
 function afficherVentes(ventes) {
   const container = document.querySelector('.cards-list');
   if (!container) return;
-
   if (ventes.length === 0) {
     container.innerHTML = '<p style="padding:1rem;text-align:center;color:#a0a0a0;">Aucune vente enregistrée</p>';
     return;
   }
-
   container.innerHTML = ventes.map(v => `
     <div class="list-card">
       <div class="lc-left">
@@ -72,12 +72,12 @@ function afficherVentes(ventes) {
 }
 
 async function enregistrerVente() {
-  const produit  = document.querySelector('#modal-vente input[type="text"]').value.trim();
-  const inputs   = document.querySelectorAll('#modal-vente input[type="number"]');
+  const produit = document.querySelector('#modal-vente input[type="text"]').value.trim();
+  const inputs  = document.querySelectorAll('#modal-vente input[type="number"]');
   const quantite = inputs[0].value;
   const montant  = inputs[1].value;
-  const mode     = document.querySelector('.pay-mode.active')?.textContent || 'Cash';
-  const client   = document.querySelectorAll('#modal-vente input[type="text"]')[1]?.value.trim();
+  const mode   = document.querySelector('.pay-mode.active')?.textContent || 'Cash';
+  const client = document.querySelectorAll('#modal-vente input[type="text"]')[1]?.value.trim();
 
   if (!produit || !quantite || !montant) {
     alert('Remplis tous les champs obligatoires');
@@ -88,25 +88,14 @@ async function enregistrerVente() {
     await fetch(`${API}/ventes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        produit,
-        quantite: Number(quantite),
-        montant: Number(montant),
-        mode_paiement: mode,
-        client: client || ''
-      })
+      body: JSON.stringify({ produit, quantite: Number(quantite), montant: Number(montant), mode_paiement: mode, client: client || '' })
     });
 
     if (mode === 'À crédit' && client) {
       await fetch(`${API}/dettes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          client: client,
-          produit: produit,
-          montant: Number(montant),
-          date_remboursement: ''
-        })
+        body: JSON.stringify({ client, produit, montant: Number(montant), date_remboursement: '' })
       });
     }
 
@@ -119,10 +108,15 @@ async function enregistrerVente() {
 
 document.querySelector('.btn-save').addEventListener('click', enregistrerVente);
 
+// ===== DÉMARRAGE =====
 async function initialiserVentes() {
   const container = document.querySelector('.cards-list');
   if (!container) return;
-  const injected = await injecterDemoVentes(container);
-  if (!injected) chargerVentes();
+  if (typeof injecterDemoVentes === 'function') {
+    const injected = await injecterDemoVentes(container);
+    if (!injected) chargerVentes();
+  } else {
+    chargerVentes();
+  }
 }
 initialiserVentes();
