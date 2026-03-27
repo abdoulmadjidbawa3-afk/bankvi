@@ -1,25 +1,32 @@
-// ===== DATE AUTOMATIQUE =====
-function afficherDate() {
-  const options = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+const API = window.location.origin + '/api';
+
+function getHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': localStorage.getItem('bankvi_token') || ''
   };
-  const date = new Date().toLocaleDateString('fr-FR', options);
-  const el = document.getElementById('nav-date');
-  if (el) el.textContent = date;
 }
 
+function afficherDate() {
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const el = document.getElementById('nav-date');
+  if (el) el.textContent = new Date().toLocaleDateString('fr-FR', options);
+}
 afficherDate();
 
-// ===== SIDEBAR DESKTOP SEULEMENT =====
+const user = JSON.parse(localStorage.getItem('bankvi_user') || '{}');
+const avatar = document.querySelector('.nav-avatar');
+if (avatar && user.nom) {
+  avatar.textContent = user.nom.substring(0, 2).toUpperCase();
+  avatar.title = user.nom;
+}
+
 function creerSidebar() {
   if (window.innerWidth < 768) return;
-
+  const existing = document.querySelector('.sidebar');
+  if (existing) existing.remove();
   const sidebar = document.createElement('aside');
   sidebar.className = 'sidebar';
-
   const items = [
     { icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>', label: 'Accueil', href: 'index.html' },
     { icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M9 6v3l2 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>', label: 'Dettes', href: 'dettes.html' },
@@ -27,9 +34,7 @@ function creerSidebar() {
     { icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 9h6M9 6v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>', label: 'Stocks', href: 'stocks.html' },
     { icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 15c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>', label: 'Profil', href: 'profil.html' },
   ];
-
   const pageCourante = window.location.pathname.split('/').pop() || 'index.html';
-
   items.forEach(item => {
     const a = document.createElement('a');
     a.href = item.href;
@@ -37,14 +42,11 @@ function creerSidebar() {
     a.innerHTML = item.icon + `<span>${item.label}</span>`;
     sidebar.appendChild(a);
   });
-
   const navbar = document.querySelector('.navbar');
   if (navbar) navbar.insertAdjacentElement('afterend', sidebar);
 }
-
 creerSidebar();
 
-// ===== UTILITAIRES =====
 function formaterMontant(montant) {
   return Number(montant).toLocaleString('fr-FR') + ' F';
 }
@@ -56,17 +58,16 @@ function joursDepuis(dateStr) {
   return `il y a ${diff} jours`;
 }
 
-// ===== CHARGER DASHBOARD =====
 async function chargerDashboard() {
   const hero = document.querySelector('.hero-amount');
   if (!hero) return;
 
   try {
-    const res = await fetch(window.location.origin + '/api/dashboard');
+    const res  = await fetch(`${API}/dashboard`, { headers: getHeaders() });
     const data = await res.json();
 
     document.querySelector('.hero-amount').textContent = formaterMontant(data.ventes_jour);
-    document.querySelector('.hero-sub').textContent = data.ventes_count + ' ventes enregistrées';
+    document.querySelector('.hero-sub').textContent    = data.ventes_count + ' ventes enregistrées';
 
     const metriques = document.querySelectorAll('.metric-value');
     if (metriques[0]) metriques[0].textContent = formaterMontant(data.dettes_total);
@@ -74,13 +75,13 @@ async function chargerDashboard() {
     if (metriques[2]) metriques[2].textContent = formaterMontant(0);
     if (metriques[3]) metriques[3].textContent = '1';
 
-    const resD = await fetch(window.location.origin + '/api/dettes');
+    const resD   = await fetch(`${API}/dettes`, { headers: getHeaders() });
     const dettes = await resD.json();
     const enCours = dettes.filter(d => d.statut === 'en_cours');
     afficherDettesRecentes(enCours.slice(0, 3));
 
   } catch(e) {
-    console.log('Serveur non disponible');
+    console.log('Erreur dashboard');
   }
 }
 
@@ -116,8 +117,4 @@ function afficherDettesRecentes(dettes) {
   `).join('');
 }
 
-async function initialiserDashboard() {
-  const estDemo = await injecterDemoDashboard();
-  if (!estDemo) chargerDashboard();
-}
-initialiserDashboard();
+chargerDashboard();

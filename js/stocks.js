@@ -1,5 +1,12 @@
 const API = window.location.origin + '/api';
 
+function getHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': localStorage.getItem('bankvi_token') || ''
+  };
+}
+
 function ouvrirModalStock() {
   document.getElementById('modal-stock').classList.add('open');
 }
@@ -90,7 +97,7 @@ function afficherStocks(stocks) {
 
 async function chargerStocks() {
   try {
-    const res = await fetch(`${API}/stocks`);
+    const res    = await fetch(`${API}/stocks`, { headers: getHeaders() });
     const stocks = await res.json();
     afficherStocks(stocks);
     mettreAJourMetriques(stocks);
@@ -116,7 +123,7 @@ async function enregistrerStock() {
   try {
     await fetch(`${API}/stocks`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(),
       body: JSON.stringify({ nom, categorie, quantite: Number(quantite), seuil_alerte: Number(seuil) || 5, prix_unitaire: Number(prix) })
     });
     fermerModalStock();
@@ -128,15 +135,4 @@ async function enregistrerStock() {
 
 document.querySelector('.btn-save').addEventListener('click', enregistrerStock);
 
-// ===== DÉMARRAGE =====
-async function initialiserStocks() {
-  const container = document.querySelector('.cards-list');
-  if (!container) return;
-  if (typeof injecterDemoStocks === 'function') {
-    const injected = await injecterDemoStocks(container);
-    if (!injected) chargerStocks();
-  } else {
-    chargerStocks();
-  }
-}
-initialiserStocks();
+chargerStocks();
