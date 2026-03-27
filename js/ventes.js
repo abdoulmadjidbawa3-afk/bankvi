@@ -1,12 +1,5 @@
 const API = window.location.origin + '/api';
 
-function getHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': localStorage.getItem('bankvi_token') || ''
-  };
-}
-
 function ouvrirModalVente() {
   document.getElementById('modal-vente').classList.add('open');
 }
@@ -45,7 +38,7 @@ function getBadgeMode(mode) {
 
 async function chargerVentes() {
   try {
-    const res    = await fetch(`${API}/ventes`, { headers: getHeaders() });
+    const res = await fetch(`${API}/ventes`);
     const ventes = await res.json();
     afficherVentes(ventes);
     mettreAJourHero(ventes);
@@ -58,7 +51,7 @@ function afficherVentes(ventes) {
   const container = document.querySelector('.cards-list');
   if (!container) return;
   if (ventes.length === 0) {
-    container.innerHTML = '<p style="padding:1.5rem;text-align:center;color:#a0a0a0;">Aucune vente — Enregistre ta première vente</p>';
+    container.innerHTML = '<p style="padding:1rem;text-align:center;color:#a0a0a0;">Aucune vente enregistrée</p>';
     return;
   }
   container.innerHTML = ventes.map(v => `
@@ -74,15 +67,17 @@ function afficherVentes(ventes) {
         <p class="lc-amount green">+${Number(v.montant).toLocaleString('fr-FR')} F</p>
         <span class="badge-mode ${getBadgeMode(v.mode_paiement)}">${v.mode_paiement}</span>
       </div>
-    </div>`).join('');
+    </div>
+  `).join('');
 }
 
 async function enregistrerVente() {
-  const produit  = document.getElementById('vente-produit').value.trim();
-  const quantite = document.getElementById('vente-quantite').value;
-  const montant  = document.getElementById('vente-montant').value;
-  const mode     = document.querySelector('.pay-mode.active')?.textContent.trim() || 'Cash';
-  const client   = document.getElementById('vente-client').value.trim();
+  const produit = document.querySelector('#modal-vente input[type="text"]').value.trim();
+  const inputs  = document.querySelectorAll('#modal-vente input[type="number"]');
+  const quantite = inputs[0].value;
+  const montant  = inputs[1].value;
+  const mode   = document.querySelector('.pay-mode.active')?.textContent || 'Cash';
+  const client = document.querySelectorAll('#modal-vente input[type="text"]')[1]?.value.trim();
 
   if (!produit || !quantite || !montant) {
     alert('Remplis tous les champs obligatoires');
@@ -92,20 +87,18 @@ async function enregistrerVente() {
   try {
     await fetch(`${API}/ventes`, {
       method: 'POST',
-      headers: getHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ produit, quantite: Number(quantite), montant: Number(montant), mode_paiement: mode, client: client || '' })
     });
+
     if (mode === 'À crédit' && client) {
       await fetch(`${API}/dettes`, {
         method: 'POST',
-        headers: getHeaders(),
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ client, produit, montant: Number(montant), date_remboursement: '' })
       });
     }
-    document.getElementById('vente-produit').value  = '';
-    document.getElementById('vente-quantite').value = '';
-    document.getElementById('vente-montant').value  = '';
-    document.getElementById('vente-client').value   = '';
+
     fermerModalVente();
     chargerVentes();
   } catch(e) {
@@ -113,6 +106,17 @@ async function enregistrerVente() {
   }
 }
 
-document.getElementById('btn-enregistrer-vente').addEventListener('click', enregistrerVente);
+document.querySelector('.btn-save').addEventListener('click', enregistrerVente);
 
-chargerVentes();
+// ===== DÉMARRAGE =====
+async function initialiserVentes() {
+  const container = document.querySelector('.cards-list');
+  if (!container) return;
+  if (typeof injecterDemoVentes === 'function') {
+    const injected = await injecterDemoVentes(container);
+    if (!injected) chargerVentes();
+  } else {
+    chargerVentes();
+  }
+}
+initialiserVentes();

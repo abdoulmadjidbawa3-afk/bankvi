@@ -7,9 +7,7 @@ const DB_PATH = path.join(__dirname, '../bankvi.db');
 
 async function getDb() {
   if (db) return db;
-  
   const SQL = await initSqlJs();
-  
   if (fs.existsSync(DB_PATH)) {
     const fileBuffer = fs.readFileSync(DB_PATH);
     db = new SQL.Database(fileBuffer);
@@ -18,8 +16,18 @@ async function getDb() {
   }
 
   db.run(`
+    CREATE TABLE IF NOT EXISTS utilisateurs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nom TEXT NOT NULL,
+      boutique TEXT NOT NULL,
+      tel TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      token TEXT
+    );
+
     CREATE TABLE IF NOT EXISTS ventes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      utilisateur_id INTEGER NOT NULL,
       produit TEXT NOT NULL,
       quantite INTEGER NOT NULL,
       montant REAL NOT NULL,
@@ -30,6 +38,7 @@ async function getDb() {
 
     CREATE TABLE IF NOT EXISTS dettes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      utilisateur_id INTEGER NOT NULL,
       client TEXT NOT NULL,
       produit TEXT NOT NULL,
       montant REAL NOT NULL,
@@ -40,20 +49,12 @@ async function getDb() {
 
     CREATE TABLE IF NOT EXISTS stocks (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      utilisateur_id INTEGER NOT NULL,
       nom TEXT NOT NULL,
       categorie TEXT NOT NULL,
       quantite INTEGER NOT NULL,
       seuil_alerte INTEGER DEFAULT 5,
       prix_unitaire REAL NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS utilisateurs (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nom TEXT NOT NULL,
-      boutique TEXT NOT NULL,
-      tel TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL,
-      token TEXT
     );
   `);
 

@@ -1,12 +1,5 @@
 const API = window.location.origin + '/api';
 
-function getHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': localStorage.getItem('bankvi_token') || ''
-  };
-}
-
 function ouvrirModal() {
   document.getElementById('modal-dette').classList.add('open');
 }
@@ -24,26 +17,31 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 
 function mettreAJourHero(dettes) {
   const enCours = dettes.filter(d => d.statut === 'en_cours');
-  const total   = enCours.reduce((s, d) => s + d.montant, 0);
-  const hero    = document.querySelector('.hero-amount');
+  const total = enCours.reduce((s, d) => s + d.montant, 0);
+  const hero = document.querySelector('.hero-amount');
   if (hero) hero.textContent = Number(total).toLocaleString('fr-FR') + ' F';
   const sub = document.querySelector('.hero-sub');
   if (sub) sub.textContent = enCours.length + ' clients concernés';
 }
 
 function afficherDettes(dettes) {
+  const urgentes = dettes.filter(d => d.statut === 'en_cours');
   const container = document.querySelector('.cards-list');
   if (!container) return;
-  const enCours = dettes.filter(d => d.statut === 'en_cours');
-  if (enCours.length === 0) {
-    container.innerHTML = '<p style="padding:1.5rem;text-align:center;color:#a0a0a0;">Aucune dette en cours</p>';
+
+  if (urgentes.length === 0) {
+    container.innerHTML = '<p style="padding:1rem;text-align:center;color:#a0a0a0;">Aucune dette en cours</p>';
     return;
   }
-  container.innerHTML = enCours.map(d => `
+
+  container.innerHTML = urgentes.map(d => `
     <div class="list-card urgent" id="dette-${d.id}">
       <div class="lc-left">
         <div class="lc-avatar red">${d.client.substring(0,2).toUpperCase()}</div>
-        <div><p class="lc-name">${d.client}</p><p class="lc-sub">${d.produit}</p></div>
+        <div>
+          <p class="lc-name">${d.client}</p>
+          <p class="lc-sub">${d.produit}</p>
+        </div>
       </div>
       <div class="lc-right">
         <p class="lc-amount red">${Number(d.montant).toLocaleString('fr-FR')} F</p>
@@ -53,12 +51,13 @@ function afficherDettes(dettes) {
     <div class="list-card-actions">
       <button class="btn-success-sm" onclick="marquerPaye(${d.id})">Marquer payé</button>
       <button class="btn-neutral-sm">Rappel envoyé</button>
-    </div>`).join('');
+    </div>
+  `).join('');
 }
 
 async function chargerDettes() {
   try {
-    const res    = await fetch(`${API}/dettes`, { headers: getHeaders() });
+    const res = await fetch(`${API}/dettes`);
     const dettes = await res.json();
     afficherDettes(dettes);
     mettreAJourHero(dettes);
@@ -68,9 +67,9 @@ async function chargerDettes() {
 }
 
 async function enregistrerDette() {
-  const client             = document.getElementById('input-nom').value.trim();
-  const produit            = document.getElementById('input-produit').value.trim();
-  const montant            = document.getElementById('input-montant').value;
+  const client = document.getElementById('input-nom').value.trim();
+  const produit = document.getElementById('input-produit').value.trim();
+  const montant = document.getElementById('input-montant').value;
   const date_remboursement = document.getElementById('input-date').value;
 
   if (!client || !produit || !montant) {
@@ -81,13 +80,9 @@ async function enregistrerDette() {
   try {
     await fetch(`${API}/dettes`, {
       method: 'POST',
-      headers: getHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ client, produit, montant: Number(montant), date_remboursement })
     });
-    document.getElementById('input-nom').value     = '';
-    document.getElementById('input-produit').value = '';
-    document.getElementById('input-montant').value = '';
-    document.getElementById('input-date').value    = '';
     fermerModal();
     chargerDettes();
   } catch(e) {
@@ -97,13 +92,24 @@ async function enregistrerDette() {
 
 async function marquerPaye(id) {
   try {
-    await fetch(`${API}/dettes/${id}/payer`, { method: 'PUT', headers: getHeaders() });
+    await fetch(`${API}/dettes/${id}/payer`, { method: 'PUT' });
     chargerDettes();
   } catch(e) {
     alert('Erreur — serveur non disponible');
   }
 }
 
-document.getElementById('btn-enregistrer-dette').addEventListener('click', enregistrerDette);
+document.querySelector('.btn-save').addEventListener('click', enregistrerDette);
 
-chargerDettes();
+// ===== DÉMARRAGE =====
+async function initialiserDettes() {
+  const container = document.querySelector('.cards-list');
+  if (!container) return;
+  if (typeof injecterDemoDettes === 'function') {
+    const injected = await injecterDemoDettes(container);
+    if (!injected) chargerDettes();
+  } else {
+    chargerDettes();
+  }
+}
+initialiserDettes();
