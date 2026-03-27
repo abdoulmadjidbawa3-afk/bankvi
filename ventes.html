@@ -6,14 +6,11 @@
   <title>BANKVI — Ventes</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
-  <link rel="manifest" href="/manifest.json">
 </head>
 <body>
 
   <nav class="navbar">
-    <div class="nav-logo">
-  <img src="assets/logo.svg" alt="BANKVI" height="32">
-</div>
+    <div class="nav-logo">BANK<span>VI</span></div>
     <div class="nav-date" id="nav-date"></div>
     <div class="nav-avatar">KM</div>
   </nav>
@@ -153,43 +150,23 @@
   </nav>
 
   <!-- MODAL VENTE -->
- <div class="modal-bg" id="modal-vente">
-  <div class="modal">
-    <h3 class="modal-title">Nouvelle vente</h3>
-    <div class="field">
-      <label>Produit vendu</label>
-      <input type="text" id="vente-produit" placeholder="Ex: Sac de riz 50kg">
-    </div>
-    <div class="field-row">
+  <div class="modal-bg" id="modal-vente">
+    <div class="modal">
+      <h3 class="modal-title">Nouvelle vente</h3>
       <div class="field">
-        <label>Quantité</label>
-        <input type="number" id="vente-quantite" placeholder="Ex: 2">
+        <label>Produit vendu</label>
+        <input type="text" placeholder="Ex: Sac de riz 50kg">
       </div>
-      <div class="field">
-        <label>Prix total (FCFA)</label>
-        <input type="number" id="vente-montant" placeholder="Ex: 22000">
+      <div class="field-row">
+        <div class="field">
+          <label>Quantité</label>
+          <input type="number" placeholder="Ex: 2">
+        </div>
+        <div class="field">
+          <label>Prix total (FCFA)</label>
+          <input type="number" placeholder="Ex: 22000">
+        </div>
       </div>
-    </div>
-    <div class="field">
-      <label>Mode de paiement</label>
-      <div class="pay-modes">
-        <button class="pay-mode active" onclick="selectMode(this)">Cash</button>
-        <button class="pay-mode" onclick="selectMode(this)">À crédit</button>
-        <button class="pay-mode" onclick="selectMode(this)">Partiel</button>
-      </div>
-    </div>
-    <div class="field">
-      <label>Client (optionnel)</label>
-      <input type="text" id="vente-client" placeholder="Ex: Afi Koffi">
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="fermerModalVente()">Annuler</button>
-      <button class="btn-save" id="btn-enregistrer-vente">Enregistrer</button>
-    </div>
-  </div>
-</div>
-<!-- bouton save -->
-<button class="btn-save" id="btn-enregistrer-vente">Enregistrer</button>
       <div class="field">
         <label>Mode de paiement</label>
         <div class="pay-modes">
@@ -210,12 +187,6 @@
   </div>
 
   <script src="js/app.js"></script>
-   <script src="js/demo.js"></script>
   <script src="js/ventes.js"></script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
-  }
-</script>
 </body>
 </html>

@@ -6,15 +6,12 @@
   <title>BANKVI — Dettes</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
-  <link rel="manifest" href="/manifest.json">
 </head>
 <body>
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <div class="nav-logo">
-  <img src="assets/logo.svg" alt="BANKVI" height="32">
-</div>
+    <div class="nav-logo">BANK<span>VI</span></div>
     <div class="nav-date" id="nav-date"></div>
     <div class="nav-avatar">KM</div>
   </nav>
@@ -172,38 +169,32 @@
 
   <!-- MODAL AJOUTER DETTE -->
   <div class="modal-bg" id="modal-dette">
-  <div class="modal">
-    <h3 class="modal-title">Nouvelle dette client</h3>
-    <div class="field">
-      <label>Nom du client</label>
-      <input type="text" id="input-nom" placeholder="Ex: Afi Koffi">
-    </div>
-    <div class="field">
-      <label>Produit(s) acheté(s)</label>
-      <input type="text" id="input-produit" placeholder="Ex: Riz 50kg x2">
-    </div>
-    <div class="field">
-      <label>Montant dû (FCFA)</label>
-      <input type="number" id="input-montant" placeholder="Ex: 25000">
-    </div>
-    <div class="field">
-      <label>Date de remboursement prévue</label>
-      <input type="date" id="input-date">
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="fermerModal()">Annuler</button>
-      <button class="btn-save" id="btn-enregistrer-dette">Enregistrer</button>
+    <div class="modal">
+      <h3 class="modal-title">Nouvelle dette client</h3>
+      <div class="field">
+        <label>Nom du client</label>
+        <input type="text" placeholder="Ex: Afi Koffi" id="input-nom">
+      </div>
+      <div class="field">
+        <label>Produit(s) acheté(s)</label>
+        <input type="text" placeholder="Ex: Riz 50kg x2" id="input-produit">
+      </div>
+      <div class="field">
+        <label>Montant dû (FCFA)</label>
+        <input type="number" placeholder="Ex: 25000" id="input-montant">
+      </div>
+      <div class="field">
+        <label>Date de remboursement prévue</label>
+        <input type="date" id="input-date">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="fermerModal()">Annuler</button>
+        <button class="btn-save" onclick="fermerModal()">Enregistrer</button>
+      </div>
     </div>
   </div>
-</div>
 
   <script src="js/app.js"></script>
-  <script src="js/demo.js"></script>
   <script src="js/dettes.js"></script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
-  }
-</script>
 </body>
 </html>

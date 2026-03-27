@@ -75,13 +75,13 @@
   }
 
   /* MAIN CONTENT */
- .main-content {
+  .main-content {
     grid-column: 2;
     grid-row: 2;
     max-width: 100%;
-    width: 100%;
     padding: 1.5rem 2rem;
   }
+
   /* HERO CARD */
   .hero-card {
     display: grid;

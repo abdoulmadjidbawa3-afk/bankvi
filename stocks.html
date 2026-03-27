@@ -6,14 +6,11 @@
   <title>BANKVI — Stocks</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
-  <link rel="manifest" href="/manifest.json">
 </head>
 <body>
 
   <nav class="navbar">
-  <div class="nav-logo">
-  <img src="assets/logo.svg" alt="BANKVI" height="32">
-</div>
+    <div class="nav-logo">BANK<span>VI</span></div>
     <div class="nav-date" id="nav-date"></div>
     <div class="nav-avatar">KM</div>
   </nav>
@@ -218,50 +215,44 @@
 
   <!-- MODAL STOCK -->
   <div class="modal-bg" id="modal-stock">
-  <div class="modal">
-    <h3 class="modal-title">Nouveau produit</h3>
-    <div class="field">
-      <label>Nom du produit</label>
-      <input type="text" id="stock-nom" placeholder="Ex: Riz importé 50kg">
-    </div>
-    <div class="field">
-      <label>Catégorie</label>
-      <select id="stock-categorie">
-        <option>Alimentation</option>
-        <option>Hygiène</option>
-        <option>Boissons</option>
-        <option>Textile</option>
-        <option>Autre</option>
-      </select>
-    </div>
-    <div class="field-row">
+    <div class="modal">
+      <h3 class="modal-title">Nouveau produit</h3>
       <div class="field">
-        <label>Quantité initiale</label>
-        <input type="number" id="stock-quantite" placeholder="Ex: 30">
+        <label>Nom du produit</label>
+        <input type="text" placeholder="Ex: Riz importé 50kg">
       </div>
       <div class="field">
-        <label>Seuil d'alerte</label>
-        <input type="number" id="stock-seuil" placeholder="Ex: 5">
+        <label>Catégorie</label>
+        <select>
+          <option>Alimentation</option>
+          <option>Hygiène</option>
+          <option>Boissons</option>
+          <option>Textile</option>
+          <option>Autre</option>
+        </select>
       </div>
-    </div>
-    <div class="field">
-      <label>Prix unitaire (FCFA)</label>
-      <input type="number" id="stock-prix" placeholder="Ex: 11000">
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="fermerModalStock()">Annuler</button>
-      <button class="btn-save" id="btn-enregistrer-stock">Enregistrer</button>
+      <div class="field-row">
+        <div class="field">
+          <label>Quantité initiale</label>
+          <input type="number" placeholder="Ex: 30">
+        </div>
+        <div class="field">
+          <label>Seuil d'alerte</label>
+          <input type="number" placeholder="Ex: 5">
+        </div>
+      </div>
+      <div class="field">
+        <label>Prix unitaire (FCFA)</label>
+        <input type="number" placeholder="Ex: 11000">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="fermerModalStock()">Annuler</button>
+        <button class="btn-save" onclick="fermerModalStock()">Enregistrer</button>
+      </div>
     </div>
   </div>
-</div>
 
   <script src="js/app.js"></script>
-  <script src="js/demo.js"></script>
   <script src="js/stocks.js"></script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
-  }
-</script>
 </body>
 </html>
